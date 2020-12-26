@@ -66,8 +66,8 @@ def goto_next_page_or_chapter(driver, filename):
 
 # 基本設定、路徑等等都在這裡
 root_path = 'H:\野良神'
-chapter_start_from = 13
-page_start_from = 1
+chapter_start_from = 14
+page_start_from = 30
 # 山立漫畫 - 你要下載的漫畫的首頁
 index_url = 'https://www.setnmh.com/comic-lpdaj-%E9%87%8E%E8%89%AF%E7%A5%9E'
 
@@ -122,11 +122,14 @@ for keys_chapter in reversed(chapters.keys()):
         chapter_index += 1
         continue
 
-    # 頁面跳轉到該 chapter 的頁面
-    curren_url = chapters[keys_chapter]
-    url_head = [m.start() for m in re.finditer('-', chapters[keys_chapter])][-2] + 1
-    url_tail = [m.start() for m in re.finditer('-', chapters[keys_chapter])][-1]
-    driver.get(curren_url[:url_head] + str(page_start_from) + curren_url[url_tail:])
+    # 頁面跳轉到該 chapter 的頁面，並且從 page_start_from 的頁數開始下載
+    if(page_start_from > 1):
+        curren_url = chapters[keys_chapter]
+        url_head = [m.start() for m in re.finditer('-', chapters[keys_chapter])][-2] + 1
+        url_tail = [m.start() for m in re.finditer('-', chapters[keys_chapter])][-1]
+        driver.get(curren_url[:url_head] + str(page_start_from) + curren_url[url_tail:])
+    else:
+        driver.get(chapters[keys_chapter])
 
     # 建立該章節的資料夾
     download_dir = root_path + '\\' + keys_chapter
@@ -152,6 +155,7 @@ for keys_chapter in reversed(chapters.keys()):
             if goto_next_page_or_chapter(driver, download_dir + '\\' + filename):
                 continue
             else:
+                page_start_from = 1
                 break
         else:
             # 開始下載
@@ -176,4 +180,5 @@ for keys_chapter in reversed(chapters.keys()):
         if goto_next_page_or_chapter(driver, download_dir + '\\' + filename):
             continue
         else:
+            page_start_from = 1
             break
