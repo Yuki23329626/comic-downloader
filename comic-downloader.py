@@ -34,7 +34,7 @@ def wait_until_find_element_by_xpath(driver, xpath, url):
             driver.get(url)
 
 
-def goto_next_page_or_chapter(driver, filename):
+def goto_next_page_or_chapter(driver, filename, fptr):
     ttl = 5
     while ttl > 0:
         try:
@@ -61,7 +61,7 @@ def goto_next_page_or_chapter(driver, filename):
                 logging.error('Can not find the next chapter, process existing...')
                 logging.error('Current filename: ' + filename)
                 driver.close()
-                f.close()
+                fptr.close()
                 exit(0)
 
 # 基本設定、路徑等等都在這裡
@@ -152,7 +152,7 @@ for keys_chapter in reversed(chapters.keys()):
             print(download_dir + '\\' + filename + " already exist")
             page_index += 1
 
-            if goto_next_page_or_chapter(driver, download_dir + '\\' + filename):
+            if goto_next_page_or_chapter(driver, download_dir + '\\' + filename, f):
                 continue
             else:
                 page_start_from = 1
@@ -177,7 +177,7 @@ for keys_chapter in reversed(chapters.keys()):
             f.write(str(url_img) + '\n')
             f.close()
 
-        if goto_next_page_or_chapter(driver, download_dir + '\\' + filename):
+        if goto_next_page_or_chapter(driver, download_dir + '\\' + filename, f):
             continue
         else:
             page_start_from = 1
