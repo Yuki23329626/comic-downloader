@@ -14,24 +14,36 @@ FORMAT = '[%(levelname)s][%(asctime)s] %(message)s'
 logging.basicConfig(handlers=[logging.FileHandler(filename='log.comic-downloader', encoding='utf-8')], format=FORMAT, level=logging.WARNING)
 
 def wait_until_find_elements_by_xpath(driver, xpath, url):
+    ttl = 5
     while True:
         try:
-            wait = WebDriverWait(driver, 10)
-            elements = wait.until(EC.presence_of_all_elements_located((By.XPATH, xpath)))
-            return elements
-        except Exception as e:
-            print('wait_until_find_elements_by_xpath: ', e)
-            driver.get(url)
-
-def wait_until_find_element_by_xpath(driver, xpath, url):
-    while True:
-        try:
-            wait = WebDriverWait(driver, 10)
-            element = wait.until(EC.presence_of_element_located((By.XPATH, xpath)))
+            element = driver.find_elements_by_xpath(xpath)
             return element
         except Exception as e:
-            print('wait_until_find_element_by_xpath: ', e)
-            driver.get(url)
+            print('Retry:', ttl)
+            time.sleep(1)
+            ttl -= 1
+            # print('Error: wait_until_find_elements_by_xpath()')
+            if ttl < 1:
+                logging.error(e)
+                driver.get(url)
+                ttl = 5
+
+def wait_until_find_element_by_xpath(driver, xpath, url):
+    ttl = 5
+    while True:
+        try:
+            element = driver.find_element_by_xpath(xpath)
+            return element
+        except Exception as e:
+            print('Retry:', ttl)
+            time.sleep(1)
+            ttl -= 1
+            # print('Error: wait_until_find_element_by_xpath()')
+            if ttl < 1:
+                logging.error(e)
+                driver.get(url)
+                ttl = 5
 
 
 def goto_next_page_or_chapter(driver, filename, fptr):
@@ -41,7 +53,7 @@ def goto_next_page_or_chapter(driver, filename, fptr):
             driver.find_element_by_xpath("//a[.='下一頁']").click()
             return True
         except Exception as e:
-            print('Retry:', ttl)
+            print('Retry next_page:', ttl)
             time.sleep(1)
             ttl -= 1
     print('\n===== Go to next chapter =====')
@@ -54,7 +66,7 @@ def goto_next_page_or_chapter(driver, filename, fptr):
             print('Retry:', ttl)
             time.sleep(1)
             ttl -= 1
-            if(ttl < 1):
+            if ttl < 1:
                 print('\n===== Can not find the next chapter =====')
                 print('\n===== Process existing =====')
                 print('\nCurrent filename: ' + filename)
@@ -66,8 +78,8 @@ def goto_next_page_or_chapter(driver, filename, fptr):
 
 # 基本設定、路徑等等都在這裡
 root_path = 'H:\野良神'
-chapter_start_from = 19
-page_start_from = 40
+chapter_start_from = 36
+page_start_from = 7
 # 山立漫畫 - 你要下載的漫畫的首頁
 index_url = 'https://www.setnmh.com/comic-lpdaj-%E9%87%8E%E8%89%AF%E7%A5%9E'
 
