@@ -44,7 +44,7 @@ def goto_next_page_or_chapter(driver):
     ttl = 10
     while ttl > 0:
         try:
-            print('goto_next_chapter: ', e)
+            print('\n===== goto_next_chapter =====\n')
             wait = WebDriverWait(driver, 10)
             element = wait.until(EC.element_to_be_clickable((By.XPATH, "//a[.='下一話']")))
             element.click()
