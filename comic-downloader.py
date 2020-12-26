@@ -66,7 +66,7 @@ def goto_next_page_or_chapter(driver, filename):
 
 # 基本設定、路徑等等都在這裡
 root_path = 'H:\野良神'
-chapter_start_from = 11
+chapter_start_from = 13
 page_start_from = 1
 # 山立漫畫 - 你要下載的漫畫的首頁
 index_url = 'https://www.setnmh.com/comic-lpdaj-%E9%87%8E%E8%89%AF%E7%A5%9E'
