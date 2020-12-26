@@ -47,14 +47,15 @@ def goto_next_page_or_chapter(driver):
             return False
         except Exception as e:
             if(ttl == 0):
-                print('cannot found next chapter: ', e)
+                print('\n===== cannot find next chapter =====\n')
+                print('\n===== process existing =====\n')
                 driver.close()
                 f.close()
                 exit(0)
 
 # 基本設定、路徑等等都在這裡
 root_path = 'H:\野良神'
-chapter_start_from = 4
+chapter_start_from = 6
 # 山立漫畫 - 你要下載的漫畫的首頁
 index_url = 'https://www.setnmh.com/comic-lpdaj-%E9%87%8E%E8%89%AF%E7%A5%9E'
 
