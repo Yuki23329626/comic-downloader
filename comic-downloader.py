@@ -28,20 +28,21 @@ def wait_until_find_element_by_xpath(driver, xpath, url):
             driver.get(url)
 
 
-def goto_next_page_or_chapter():
+def goto_next_page_or_chapter(driver):
     try:
-        wait = WebDriverWait(driver, 5)
-        wait.until(EC.visibility_of_element_located((By.XPATH, "//a[.='下一頁']"))).click()
+        wait = WebDriverWait(driver, 10)
+        element = wait.until(EC.presence_of_element_located((By.XPATH, "//a[.='下一頁']")))
+        element.click()
         return True
     except Exception as e:
-        print('goto_next_page_or_chapter: ', e)
-        wait = WebDriverWait(driver, 5)
-        element = wait.until(EC.visibility_of_element_located((By.XPATH, "//a[.='下一話']")))
-        if(element):
+        try:
+            print('goto_next_page_or_chapter: ', e)
+            wait = WebDriverWait(driver, 10)
+            element = wait.until(EC.presence_of_element_located((By.XPATH, "//a[.='下一話']")))
             element.click()
-            #break
             return False
-        else:
+        except Exception as e:
+            print('cannot found next chapter: ', e)
             driver.close()
             f.close()
             exit(0)
@@ -127,7 +128,7 @@ for keys_chapter in reversed(chapters.keys()):
             print(download_dir + '\\' + filename + " already exist")
             count += 1
 
-            if goto_next_page_or_chapter():
+            if goto_next_page_or_chapter(driver):
                 continue
             else:
                 break
@@ -151,7 +152,7 @@ for keys_chapter in reversed(chapters.keys()):
             f.write(str(url_img) + '\n')
             f.close()
 
-        if goto_next_page_or_chapter():
+        if goto_next_page_or_chapter(driver):
             continue
         else:
             break
