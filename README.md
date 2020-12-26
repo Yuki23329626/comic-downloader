@@ -15,10 +15,9 @@ A comic downloader in Python with Selenium.
 # 基本設定、路徑等等都在這裡
 root_path = 'H:\野良神'
 chapter_start_from = 1
-filename = 1
-filepath_download_hisoty = root_path + '\download_history.txt'
 # 山立漫畫 - 你要下載的漫畫的首頁
 index_url = 'https://www.setnmh.com/comic-lpdaj-%E9%87%8E%E8%89%AF%E7%A5%9E'
+
 ```
 2. 執行
 ```bash
