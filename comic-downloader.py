@@ -41,7 +41,7 @@ def goto_next_page_or_chapter(driver, filename, fptr):
             driver.find_element_by_xpath("//a[.='下一頁']").click()
             return True
         except Exception as e:
-            print('ttl: ', ttl)
+            print('Retry:', ttl)
             time.sleep(1)
             ttl -= 1
     print('\n===== Go to next chapter =====')
@@ -51,11 +51,11 @@ def goto_next_page_or_chapter(driver, filename, fptr):
             driver.find_element_by_xpath("//a[.='下一話']").click()
             return False
         except Exception as e:
-            print('ttl: ', ttl)
+            print('Retry:', ttl)
             time.sleep(1)
             ttl -= 1
             if(ttl < 1):
-                print('\n===== Cannot find the next chapter =====')
+                print('\n===== Can not find the next chapter =====')
                 print('\n===== Process existing =====')
                 print('\nCurrent filename: ' + filename)
                 logging.error('Can not find the next chapter, process existing...')
@@ -66,7 +66,7 @@ def goto_next_page_or_chapter(driver, filename, fptr):
 
 # 基本設定、路徑等等都在這裡
 root_path = 'H:\野良神'
-chapter_start_from = 14
+chapter_start_from = 19
 page_start_from = 40
 # 山立漫畫 - 你要下載的漫畫的首頁
 index_url = 'https://www.setnmh.com/comic-lpdaj-%E9%87%8E%E8%89%AF%E7%A5%9E'
@@ -137,7 +137,7 @@ for keys_chapter in reversed(chapters.keys()):
         os.makedirs(download_dir)
     
     # 開始下載
-    print("\nDownload image start from page ", page_start_from)
+    print("\nDownload image start from page", page_start_from)
     page_index = page_start_from
     while True:
         # 取得該頁面的 image url
