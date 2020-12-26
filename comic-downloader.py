@@ -30,7 +30,7 @@ def wait_until_find_element_by_xpath(driver, xpath, url):
 
 
 def goto_next_page_or_chapter(driver):
-    ttl = 3
+    ttl = 5
     while ttl > 0:
         try:
             wait = WebDriverWait(driver, 10)
@@ -41,7 +41,7 @@ def goto_next_page_or_chapter(driver):
             print('ttl: ', ttl)
             time.sleep(1)
             ttl -= 1
-    ttl = 3
+    ttl = 10
     while ttl > 0:
         try:
             print('goto_next_chapter: ', e)
@@ -50,7 +50,7 @@ def goto_next_page_or_chapter(driver):
             element.click()
             return False
         except Exception as e:
-            if(ttl == 0)
+            if(ttl == 0):
                 print('cannot found next chapter: ', e)
                 driver.close()
                 f.close()
