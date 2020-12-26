@@ -82,9 +82,9 @@ def goto_next_page_or_chapter(driver, filename, fptr):
                 exit(0)
 
 # 基本設定、路徑等等都在這裡
-root_path = 'H:\野良神\\'
-chapter_start_from = 49
-page_start_from = 5
+root_path = 'H:\野良神2\\'
+chapter_start_from = 1
+page_start_from = 25
 # 山立漫畫 - 你要下載的漫畫的首頁
 index_url = 'https://www.setnmh.com/comic-lpdaj-%E9%87%8E%E8%89%AF%E7%A5%9E'
 
@@ -152,11 +152,6 @@ for keys_chapter in reversed(chapters.keys()): # 僅 python 3.8 以後適用 rev
         driver.get(chapter_url[:url_head] + str(page_start_from) + chapter_url[url_tail:])
     else:
         driver.get(chapters[keys_chapter])
-
-    # 建立該章節的資料夾
-    download_dir = root_path + keys_chapter + '\\'
-    if not os.path.exists(download_dir):
-        os.makedirs(download_dir)
     
     # 開始下載
     print("\nDownload image start from page", page_start_from)
@@ -171,12 +166,13 @@ for keys_chapter in reversed(chapters.keys()): # 僅 python 3.8 以後適用 rev
         # 全部下載完則程式結束
         if(url_img in download_history):
             filename = str(page_index) + '.jpg'
-            print(download_dir + filename + " already exist")
+            print(root_path + str(chapter_index) + '-' + filename + " already exist")
             page_index += 1
 
-            if goto_next_page_or_chapter(driver, download_dir + filename, f):
+            if goto_next_page_or_chapter(driver, root_path + str(chapter_index) + '-' + filename, f):
                 continue
             else:
+                chapter_index += 1
                 page_start_from = 1
                 break
         else:
@@ -184,14 +180,14 @@ for keys_chapter in reversed(chapters.keys()): # 僅 python 3.8 以後適用 rev
             req = urllib.request.Request(url_img, headers=headers)
             data = urllib.request.urlopen(req).read()
             filename = str(page_index) + '.jpg'
-            with open(download_dir + filename, 'wb') as f:
+            with open(root_path + str(chapter_index) + '-' + filename, 'wb') as f:
                 f.write(data)
                 f.close()
             page_index = page_index + 1
 
             # 印出目前下載的資訊
             print(url_img)
-            print(download_dir + filename)
+            print(root_path + str(chapter_index) + '-' + filename)
 
             # 下載完成後，紀錄到 download_history set 中，以及 filepath_download_hisoty 的檔案
             download_history.add(url_img)
@@ -199,8 +195,9 @@ for keys_chapter in reversed(chapters.keys()): # 僅 python 3.8 以後適用 rev
             f.write(str(url_img) + '\n')
             f.close()
 
-        if goto_next_page_or_chapter(driver, download_dir + filename, f):
+        if goto_next_page_or_chapter(driver, root_path + str(chapter_index) + '-' + filename, f):
             continue
         else:
+            chapter_index += 1
             page_start_from = 1
             break
