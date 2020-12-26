@@ -9,6 +9,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 # from selenium.common.exceptions import NoSuchElementException
 import logging
 import re
+from fake_useragent import UserAgent
+ua = UserAgent()
 
 FORMAT = '[%(levelname)s][%(asctime)s] %(message)s'
 logging.basicConfig(handlers=[logging.FileHandler(filename='log.comic-downloader', encoding='utf-8')], format=FORMAT, level=logging.WARNING)
@@ -17,8 +19,8 @@ def wait_until_find_elements_by_xpath(driver, xpath, url):
     ttl = 5
     while True:
         try:
-            # wait = WebDriverWait(driver, 10)
-            # elements = wait.until(EC.presence_of_all_elements_located((By.XPATH, xpath)))
+            wait = WebDriverWait(driver, 10)
+            elements = wait.until(EC.presence_of_all_elements_located((By.XPATH, xpath)))
             elements = driver.find_elements_by_xpath(xpath)
             return elements
         except Exception as e:
@@ -29,6 +31,11 @@ def wait_until_find_elements_by_xpath(driver, xpath, url):
             if ttl < 1:
                 logging.error(e)
                 driver.get(url)
+                try:
+                    driver.find_element_by_xpath("//span[.='點擊此處繼續閱讀']").click()
+                except Exception as e:
+                    pass
+                driver.find_element_by_xpath("//span[.='全部目錄']").click()
                 ttl = 5
 
 def wait_until_find_element_by_xpath(driver, xpath, url):
@@ -82,11 +89,13 @@ def goto_next_page_or_chapter(driver, filename, fptr):
                 exit(0)
 
 # 基本設定、路徑等等都在這裡
-root_path = 'H:\野良神2\\'
+# root_path = 'H:\野良神\\'
+root_path = 'H:\無良公會\\'
 chapter_start_from = 1
-page_start_from = 25
+page_start_from = 1
 # 山立漫畫 - 你要下載的漫畫的首頁
-index_url = 'https://www.setnmh.com/comic-lpdaj-%E9%87%8E%E8%89%AF%E7%A5%9E'
+# index_url = 'https://www.setnmh.com/comic-lpdaj-%E9%87%8E%E8%89%AF%E7%A5%9E'
+index_url = 'https://www.setnmh.com/comic-lvcnh-%E7%84%A1%E8%89%AF%E5%85%AC%E6%9C%83'
 
 # 啟動chrome瀏覽器
 # chromedriver檔案放的位置，請自行下載 chromeDriver， google 搜尋 "chromeDriver" 即可，請下載當前電腦安裝的 chrome 版本的 Driver
@@ -108,12 +117,13 @@ try:
     driver.find_element_by_xpath("//span[.='點擊此處繼續閱讀']").click()
 except Exception as e:
     pass
-driver.find_element_by_xpath("//span[.='全部目錄']").click()
+wait_until_find_element_by_xpath(driver, "//span[.='全部目錄']", index_url).click()
 
 print("Current Page Title is : %s" %driver.title)
 
 # 整理成字典，用字典來找 url
 for element in wait_until_find_elements_by_xpath(driver, '//ul[@id="ul_chapter1"]/li/a', index_url):
+    print("Current Page Title is : %s" %driver.title)
     url_chapter = element.get_attribute('href')
     folderName = element.get_attribute('title').rstrip()
     print(folderName)
