@@ -44,7 +44,7 @@ def goto_next_page_or_chapter(driver, filename):
             print('ttl: ', ttl)
             time.sleep(1)
             ttl -= 1
-    print('\n===== Go to next chapter =====\n')
+    print('\n===== Go to next chapter =====')
     ttl = 5
     while ttl > 0:
         try:
