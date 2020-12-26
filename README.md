@@ -10,7 +10,7 @@ A comic downloader in Python with Selenium.
 完成之後在 ./comic-downloader.py 設定 chromeDriver.exe 的檔案路徑  
 
 ## How to use
-1. 設定下載的網址，以及下載資料夾的路徑
+1. 在 comic-downloader.py 裡設定下載的網址，以及下載資料夾的路徑
 ```
 # 基本設定、路徑等等都在這裡
 root_path = 'H:\野良神'
