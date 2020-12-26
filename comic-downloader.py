@@ -17,8 +17,10 @@ def wait_until_find_elements_by_xpath(driver, xpath, url):
     ttl = 5
     while True:
         try:
-            element = driver.find_elements_by_xpath(xpath)
-            return element
+            # wait = WebDriverWait(driver, 10)
+            # elements = wait.until(EC.presence_of_all_elements_located((By.XPATH, xpath)))
+            elements = driver.find_elements_by_xpath(xpath)
+            return elements
         except Exception as e:
             print('Retry:', ttl)
             time.sleep(1)
@@ -33,6 +35,8 @@ def wait_until_find_element_by_xpath(driver, xpath, url):
     ttl = 5
     while True:
         try:
+            # wait = WebDriverWait(driver, 10)
+            # element = wait.until(EC.presence_of_all_element_located((By.XPATH, xpath)))
             element = driver.find_element_by_xpath(xpath)
             return element
         except Exception as e:
