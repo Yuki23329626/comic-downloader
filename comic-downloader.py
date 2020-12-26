@@ -1,3 +1,4 @@
+import time
 from selenium import webdriver
 import urllib.request
 import os  
@@ -29,27 +30,35 @@ def wait_until_find_element_by_xpath(driver, xpath, url):
 
 
 def goto_next_page_or_chapter(driver):
-    try:
-        wait = WebDriverWait(driver, 10)
-        element = wait.until(EC.presence_of_element_located((By.XPATH, "//a[.='下一頁']")))
-        element.click()
-        return True
-    except Exception as e:
+    ttl = 3
+    while ttl > 0:
         try:
-            print('goto_next_page_or_chapter: ', e)
             wait = WebDriverWait(driver, 10)
-            element = wait.until(EC.presence_of_element_located((By.XPATH, "//a[.='下一話']")))
+            element = wait.until(EC.element_to_be_clickable((By.XPATH, "//a[.='下一頁']")))
+            element.click()
+            return True
+        except Exception as e:
+            print('ttl: ', ttl)
+            time.sleep(1)
+            ttl -= 1
+    ttl = 3
+    while ttl > 0:
+        try:
+            print('goto_next_chapter: ', e)
+            wait = WebDriverWait(driver, 10)
+            element = wait.until(EC.element_to_be_clickable((By.XPATH, "//a[.='下一話']")))
             element.click()
             return False
         except Exception as e:
-            print('cannot found next chapter: ', e)
-            driver.close()
-            f.close()
-            exit(0)
+            if(ttl == 0)
+                print('cannot found next chapter: ', e)
+                driver.close()
+                f.close()
+                exit(0)
 
 # 基本設定、路徑等等都在這裡
 root_path = 'H:\野良神'
-chapter_start_from = 1
+chapter_start_from = 2
 # 山立漫畫 - 你要下載的漫畫的首頁
 index_url = 'https://www.setnmh.com/comic-lpdaj-%E9%87%8E%E8%89%AF%E7%A5%9E'
 
