@@ -34,7 +34,7 @@ def goto_next_page_or_chapter():
         wait.until(EC.visibility_of_element_located((By.XPATH, "//a[.='下一頁']"))).click()
         return True
     except Exception as e:
-        wait = WebDriverWait(driver, 1)
+        wait = WebDriverWait(driver, 5)
         element = wait.until(EC.visibility_of_element_located((By.XPATH, "//a[.='下一話']")))
         if(element):
             element.click()
