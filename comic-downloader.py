@@ -30,7 +30,7 @@ def wait_until_find_element_by_xpath(driver, xpath, url):
 
 def goto_next_page_or_chapter():
     try:
-        wait = WebDriverWait(driver, 1)
+        wait = WebDriverWait(driver, 5)
         wait.until(EC.visibility_of_element_located((By.XPATH, "//a[.='下一頁']"))).click()
         return True
     except Exception as e:
