@@ -5,8 +5,13 @@ import os
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import NoSuchElementException
+# from selenium.webdriver.common.keys import Keys
+# from selenium.common.exceptions import NoSuchElementException
+import logging
+import re
+
+FORMAT = '[%(levelname)s][%(asctime)s] %(message)s'
+logging.basicConfig(handlers=[logging.FileHandler(filename='log.comic-downloader', encoding='utf-8')], format=FORMAT, level=logging.WARNING)
 
 def wait_until_find_elements_by_xpath(driver, xpath, url):
     while True:
@@ -29,7 +34,7 @@ def wait_until_find_element_by_xpath(driver, xpath, url):
             driver.get(url)
 
 
-def goto_next_page_or_chapter(driver):
+def goto_next_page_or_chapter(driver, filename):
     ttl = 5
     while ttl > 0:
         try:
@@ -39,23 +44,30 @@ def goto_next_page_or_chapter(driver):
             print('ttl: ', ttl)
             time.sleep(1)
             ttl -= 1
-    ttl = 10
+    print('\n===== Go to next chapter =====\n')
+    ttl = 5
     while ttl > 0:
         try:
-            print('\n===== goto_next_chapter =====\n')
             driver.find_element_by_xpath("//a[.='下一話']").click()
             return False
         except Exception as e:
-            if(ttl == 0):
-                print('\n===== cannot find next chapter =====\n')
-                print('\n===== process existing =====\n')
+            print('ttl: ', ttl)
+            time.sleep(1)
+            ttl -= 1
+            if(ttl < 1):
+                print('\n===== Cannot find the next chapter =====')
+                print('\n===== Process existing =====')
+                print('\nCurrent filename: ' + filename)
+                logging.error('Can not find the next chapter, process existing...')
+                logging.error('Current filename: ' + filename)
                 driver.close()
                 f.close()
                 exit(0)
 
 # 基本設定、路徑等等都在這裡
 root_path = 'H:\野良神'
-chapter_start_from = 6
+chapter_start_from = 11
+page_start_from = 1
 # 山立漫畫 - 你要下載的漫畫的首頁
 index_url = 'https://www.setnmh.com/comic-lpdaj-%E9%87%8E%E8%89%AF%E7%A5%9E'
 
@@ -111,16 +123,19 @@ for keys_chapter in reversed(chapters.keys()):
         continue
 
     # 頁面跳轉到該 chapter 的頁面
-    driver.get(chapters[keys_chapter])
+    curren_url = chapters[keys_chapter]
+    url_head = [m.start() for m in re.finditer('-', chapters[keys_chapter])][-2] + 1
+    url_tail = [m.start() for m in re.finditer('-', chapters[keys_chapter])][-1]
+    driver.get(curren_url[:url_head] + str(page_start_from) + curren_url[url_tail:])
 
     # 建立該章節的資料夾
     download_dir = root_path + '\\' + keys_chapter
     if not os.path.exists(download_dir):
         os.makedirs(download_dir)
     
-    # 從該章節的第一頁開始下載
-    filename = 1
-    count = 1
+    # 開始下載
+    print("\nDownload image start from page ", page_start_from)
+    page_index = page_start_from
     while True:
         # 取得該頁面的 image url
         image_element = wait_until_find_element_by_xpath(driver, "//div[@class='ptview']/img", chapters[keys_chapter])
@@ -130,11 +145,11 @@ for keys_chapter in reversed(chapters.keys()):
         # 如果已經是最後一頁了，則跳轉到下一個 chapter
         # 全部下載完則程式結束
         if(url_img in download_history):
-            filename = str(count) + '.jpg'
+            filename = str(page_index) + '.jpg'
             print(download_dir + '\\' + filename + " already exist")
-            count += 1
+            page_index += 1
 
-            if goto_next_page_or_chapter(driver):
+            if goto_next_page_or_chapter(driver, download_dir + '\\' + filename):
                 continue
             else:
                 break
@@ -142,11 +157,11 @@ for keys_chapter in reversed(chapters.keys()):
             # 開始下載
             req = urllib.request.Request(url_img, headers=headers)
             data = urllib.request.urlopen(req).read()
-            filename = str(count) + '.jpg'
+            filename = str(page_index) + '.jpg'
             with open(download_dir + '\\' + filename, 'wb') as f:
                 f.write(data)
                 f.close()
-            count = count + 1
+            page_index = page_index + 1
 
             # 印出目前下載的資訊
             print(url_img)
@@ -158,7 +173,7 @@ for keys_chapter in reversed(chapters.keys()):
             f.write(str(url_img) + '\n')
             f.close()
 
-        if goto_next_page_or_chapter(driver):
+        if goto_next_page_or_chapter(driver, download_dir + '\\' + filename):
             continue
         else:
             break
