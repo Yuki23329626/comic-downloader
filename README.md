@@ -6,7 +6,7 @@ A comic downloader in Python with Selenium.
 2. urllib3 1.26.2  
 3. selenium 3.141.0  
 4. chromedriver.exe  
-請自行下載 chromeDriver， google 搜尋 "chromeDriver" 即可，請下載當前電腦安裝的 chrome 版本的 Driver  
+請自行下載 chromeDriver.exe， google 搜尋 "chromeDriver" 即可，請下載當前電腦安裝的 chrome 版本的 Driver  
 完成之後在 ./comic-downloader.py 設定 chromeDriver.exe 的檔案路徑  
 
 ## How to use
