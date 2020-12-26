@@ -14,7 +14,7 @@ def wait_until_find_elements_by_xpath(driver, xpath, url):
             elements = wait.until(EC.presence_of_all_elements_located((By.XPATH, xpath)))
             return elements
         except Exception as e:
-            print(e)
+            print('wait_until_find_elements_by_xpath: ', e)
             driver.get(url)
 
 def wait_until_find_element_by_xpath(driver, xpath, url):
@@ -24,7 +24,7 @@ def wait_until_find_element_by_xpath(driver, xpath, url):
             element = wait.until(EC.presence_of_element_located((By.XPATH, xpath)))
             return element
         except Exception as e:
-            print(e)
+            print('wait_until_find_element_by_xpath: ', e)
             driver.get(url)
 
 
@@ -34,6 +34,7 @@ def goto_next_page_or_chapter():
         wait.until(EC.visibility_of_element_located((By.XPATH, "//a[.='下一頁']"))).click()
         return True
     except Exception as e:
+        print('goto_next_page_or_chapter: ', e)
         wait = WebDriverWait(driver, 5)
         element = wait.until(EC.visibility_of_element_located((By.XPATH, "//a[.='下一話']")))
         if(element):
