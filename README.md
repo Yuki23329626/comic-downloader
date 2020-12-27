@@ -21,6 +21,11 @@ page_start_from = 7
 index_url = 'https://www.setnmh.com/comic-lpdaj-%E9%87%8E%E8%89%AF%E7%A5%9E'
 ```
 2. 執行
+- 分資料夾存放的版本  
 ```bash
 python comic-downloader.py
+```
+- 集中到一個資料夾的版本  
+```bash
+python comic-downloader-v2.py
 ```
