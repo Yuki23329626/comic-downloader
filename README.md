@@ -27,5 +27,5 @@ python comic-downloader.py
 ```
 2. 集中到一個資料夾的版本  
 ```bash
-python comic-downloader.py
+python comic-downloader-v2.py
 ```
