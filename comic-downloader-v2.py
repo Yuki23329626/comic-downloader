@@ -9,8 +9,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 # from selenium.common.exceptions import NoSuchElementException
 import logging
 import re
-from fake_useragent import UserAgent
-ua = UserAgent()
+# from fake_useragent import UserAgent
+# ua = UserAgent()
 
 FORMAT = '[%(levelname)s][%(asctime)s] %(message)s'
 logging.basicConfig(handlers=[logging.FileHandler(filename='log.comic-downloader', encoding='utf-8')], format=FORMAT, level=logging.WARNING)
@@ -53,12 +53,13 @@ def wait_until_find_element_by_xpath(driver, xpath, url):
             # print('Error: wait_until_find_element_by_xpath()')
             if ttl < 1:
                 logging.error(e)
-                logging.error(url)
+                logging.error('last file: ' + full_name)
+                logging.error('last url: ' + url)
                 driver.get(url)
                 ttl = 5
 
 
-def goto_next_page_or_chapter(driver, filename, fptr):
+def goto_next_page_or_chapter(driver, full_name, fptr):
     ttl = 5
     while ttl > 0:
         try:
@@ -81,19 +82,21 @@ def goto_next_page_or_chapter(driver, filename, fptr):
             if ttl < 1:
                 print('\n===== Can not find the next chapter =====')
                 print('\n===== Process existing =====')
-                print('\nCurrent filename: ' + filename)
+                print('\nCurrent file: ' + full_name)
                 logging.error('Can not find the next chapter, process existing...')
-                logging.error('Current filename: ' + filename)
+                logging.error('Current file: ' + full_name)
                 driver.close()
                 fptr.close()
                 exit(0)
 
 # 基本設定、路徑等等都在這裡
 root_path = 'H:\野良神\\'
-chapter_start_from = 1
-page_start_from = 1
+# root_path = 'H:\無良公會\\'
+chapter_start_from = 51
+page_start_from = 41
 # 山立漫畫 - 你要下載的漫畫的首頁
 index_url = 'https://www.setnmh.com/comic-lpdaj-%E9%87%8E%E8%89%AF%E7%A5%9E'
+# index_url = 'https://www.setnmh.com/comic-lvcnh-%E7%84%A1%E8%89%AF%E5%85%AC%E6%9C%83'
 
 # 啟動chrome瀏覽器
 # chromedriver檔案放的位置，請自行下載 chromeDriver， google 搜尋 "chromeDriver" 即可，請下載當前電腦安裝的 chrome 版本的 Driver
@@ -138,14 +141,15 @@ f = open(filepath_download_hisoty, 'r')
 download_history = set(line.strip() for line in f)
 f.close()
 
+# 從第一話開始下載
+full_name = ""
 chapter_index = 1
 # list_keys_chapter = []
 # for key in chapters.keys():
 #     list_keys_chapter.append(key)
-
-# 從第一話開始下載
-for keys_chapter in reversed(chapters.keys()): # 僅 python 3.8 以後適用 reversed(dictionary.keys())
 #for keys_chapter in reversed(list_keys_chapter): 
+
+for keys_chapter in reversed(chapters.keys()): # 僅 python 3.8 以後適用 reversed(dictionary.keys())
     # 如果想要跳過前面的章節，可以設定 chapter_start_from 變數
     if(chapter_index < chapter_start_from):
         print("skip chapter: ", chapter_index)
@@ -174,10 +178,11 @@ for keys_chapter in reversed(chapters.keys()): # 僅 python 3.8 以後適用 rev
         # 全部下載完則程式結束
         if(url_img in download_history):
             filename = str(page_index) + '.jpg'
-            print(root_path + str(chapter_index) + '-' + filename + " already exist")
+            full_name = root_path + str(chapter_index) + '-' + filename
+            print(full_name + " already exist")
             page_index += 1
 
-            if goto_next_page_or_chapter(driver, root_path + str(chapter_index) + '-' + filename, f):
+            if goto_next_page_or_chapter(driver, full_name, f):
                 continue
             else:
                 chapter_index += 1
@@ -188,14 +193,15 @@ for keys_chapter in reversed(chapters.keys()): # 僅 python 3.8 以後適用 rev
             req = urllib.request.Request(url_img, headers=headers)
             data = urllib.request.urlopen(req).read()
             filename = str(page_index) + '.jpg'
-            with open(root_path + str(chapter_index) + '-' + filename, 'wb') as f:
+            full_name = root_path + str(chapter_index) + '-' + filename
+            with open(full_name, 'wb') as f:
                 f.write(data)
                 f.close()
             page_index = page_index + 1
 
             # 印出目前下載的資訊
             print(url_img)
-            print(root_path + str(chapter_index) + '-' + filename)
+            print(full_name)
 
             # 下載完成後，紀錄到 download_history set 中，以及 filepath_download_hisoty 的檔案
             download_history.add(url_img)
