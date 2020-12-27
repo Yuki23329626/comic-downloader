@@ -91,8 +91,8 @@ def goto_next_page_or_chapter(driver, filename, fptr):
 # 基本設定、路徑等等都在這裡
 # root_path = 'H:\野良神\\'
 root_path = 'H:\無良公會\\'
-chapter_start_from = 1
-page_start_from = 1
+chapter_start_from = 29
+page_start_from = 4
 # 山立漫畫 - 你要下載的漫畫的首頁
 # index_url = 'https://www.setnmh.com/comic-lpdaj-%E9%87%8E%E8%89%AF%E7%A5%9E'
 index_url = 'https://www.setnmh.com/comic-lvcnh-%E7%84%A1%E8%89%AF%E5%85%AC%E6%9C%83'
@@ -140,12 +140,12 @@ f = open(filepath_download_hisoty, 'r')
 download_history = set(line.strip() for line in f)
 f.close()
 
+chapter_index = 1
 # list_keys_chapter = []
 # for key in chapters.keys():
 #     list_keys_chapter.append(key)
 
 # 從第一話開始下載
-chapter_index = 1
 for keys_chapter in reversed(chapters.keys()): # 僅 python 3.8 以後適用 reversed(dictionary.keys())
 #for keys_chapter in reversed(list_keys_chapter): 
     # 如果想要跳過前面的章節，可以設定 chapter_start_from 變數
