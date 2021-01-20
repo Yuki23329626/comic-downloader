@@ -106,11 +106,13 @@ def driver_restart(driver, chromeDriver, current_url):
 
 
 # 基本設定、路徑等等都在這裡
-root_path = 'H:\野良神\\'
-chapter_start_from = 75
-page_start_from = 41
+# root_path = 'H:\野良神\\'
+root_path = 'H:\無良公會\\'
+chapter_start_from = 28
+page_start_from = 13
 # 山立漫畫 - 你要下載的漫畫的首頁
-index_url = 'https://www.setnmh.com/comic-lpdaj-%E9%87%8E%E8%89%AF%E7%A5%9E'
+# index_url = 'https://www.setnmh.com/comic-lpdaj-%E9%87%8E%E8%89%AF%E7%A5%9E'
+index_url = 'https://www.setnmh.com/comic-lvcnh-%E7%84%A1%E8%89%AF%E5%85%AC%E6%9C%83'
 
 # 啟動chrome瀏覽器
 # chromedriver檔案放的位置，請自行下載 chromeDriver， google 搜尋 "chromeDriver" 即可，請下載當前電腦安裝的 chrome 版本的 Driver
